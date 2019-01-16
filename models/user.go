@@ -14,7 +14,6 @@ type User struct {
 	ID    string
 	Name  string
 	Email string
-	tel   string
 }
 
 //Users is user
