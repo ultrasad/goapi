@@ -21,6 +21,6 @@ func CreateUser(c echo.Context) error {
 //GetUsers is get user
 func GetUsers(c echo.Context) error {
 	result := models.GetUser()
-	println("foo")
+	//println("foo")
 	return c.JSON(http.StatusOK, result)
 }

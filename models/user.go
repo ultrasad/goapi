@@ -14,6 +14,7 @@ type User struct {
 	ID    string
 	Name  string
 	Email string
+	tel   string
 }
 
 //Users is user
@@ -33,11 +34,11 @@ func CreateUser() Users {
 func GetUser() Users {
 	con := db.CreateCon()
 
-	sqlStatement := "SELECT id,name, email FROM users order by id"
+	sqlStatement := "SELECT id, name, email FROM users order by id"
 
 	rows, err := con.Query(sqlStatement)
-	fmt.Println(rows)
-	fmt.Println(err)
+	//fmt.Println(rows)
+	//fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
 	}
