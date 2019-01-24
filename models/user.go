@@ -5,18 +5,32 @@ import (
 	//"github.com/jinzhu/gorm"
 
 	"fmt"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/ultrasad/goapi/db"
 	gormdb "github.com/ultrasad/goapi/db/gorm"
 )
 
-//User is user
-type User struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+//BaseModel is default field on table users
+type BaseModel struct {
+	ID        uint64     `json:"id" sql:"AUTO_INCREMENT" gorm:"primary_key,column:id"`
+	CreatedAt time.Time  `json:"created_at" gorm:"column:created_at" sql:"DEFAULT:current_timestamp"`
+	UpdatedAt time.Time  `json:"updated_at" gorm:"column:updated_at" sql:"DEFAULT:current_timestamp"`
+	DeletedAt *time.Time `json:"deleted_at" gorm:"column:deleted_at"`
 }
+
+//User is user
+type (
+	User struct {
+		//BaseModel
+		ID        string    `json:"id"`
+		Name      string    `json:"name"`
+		Email     string    `json:"email"`
+		Timestamp time.Time `json:"timestamp" gorm:"column:timestamp" sql:"DEFAULT:current_timestamp"`
+		//CreatedAt *time.Time `json:"created_at"`
+	}
+)
 
 //Users is user
 type Users struct {
@@ -32,7 +46,6 @@ type (
 // accept DBFunc as parameter
 // call DBFunc function within transaction begin, and commit and return error from DBFunc
 func WithinTransaction(fn DBFunc) (err error) {
-	//tx := cgorm.DBManager().Begin() // start db transaction
 	tx := gormdb.DBManager().Begin() // start db transaction
 	defer tx.Commit()
 	err = fn(tx)
@@ -42,6 +55,7 @@ func WithinTransaction(fn DBFunc) (err error) {
 
 // FindAll ...
 // Helper function to find records by using 'WithinTransaction'
+/*
 func FindAll(v interface{}) (err error) {
 	return WithinTransaction(func(tx *gorm.DB) error {
 		if err = tx.Find(v).Error; err != nil {
@@ -51,19 +65,97 @@ func FindAll(v interface{}) (err error) {
 		return err
 	})
 }
+*/
 
-//CreateUser is create user
-func CreateUser() Users {
-	return Users{}
+// Save ...
+// Helper function to save gorm model to database by using 'WithinTransaction'
+/*
+func Save(v interface{}) error {
+	return WithinTransaction(func(tx *gorm.DB) (err error) {
+		// check new object
+		if gormdb.DBManager().NewRecord(v) {
+			fmt.Println("NewRecord => ", err)
+			return err
+		}
+		if err = tx.Save(v).Error; err != nil {
+			fmt.Println("Save => ", err)
+			tx.Rollback() // rollback
+			return err
+		}
+		return err
+	})
+}
+*/
+
+// Create ...
+// Helper function to insert gorm model to database by using 'WithinTransaction'
+func Create(v interface{}) error {
+	return WithinTransaction(func(tx *gorm.DB) (err error) {
+		// check new object
+		if !gormdb.DBManager().NewRecord(v) {
+			return err
+		}
+		if err = tx.Create(v).Error; err != nil {
+			tx.Rollback() // rollback
+			return err
+		}
+		return err
+	})
 }
 
-//GetUserByID is get user
-func GetUserByID(id uint64) User {
+//CreateAnimals is create example
+func CreateAnimals(db *gorm.DB) error {
+	// Note the use of tx as the database handle once you are within a transaction
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	if err := tx.Create(&User{Name: "Andrew"}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Create(&User{Name: "Peter"}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+}
+
+//CreateUser is create user
+func CreateUser() (*User, error) {
+	//return Users{}
+	//m := User{ID: "3", Name: "Anat", Email: "Anat@gmail.com"}
+	u := &User{Name: "Peter", Email: "Peter@gmail.com"}
+	var err error
+	//fmt.Println("m => ", m)
+
+	//db := gormdb.ConnectMySQL()
+	//err = CreateAnimals(db)
+
+	err = Create(u)
+
+	//fmt.Println("m &m => ", &m)
+	fmt.Println("Create m err => ", err)
+
+	return u, err
+}
+
+//GetUser is get user
+func GetUser(id string) User {
 	db := gormdb.ConnectMySQL()
 	user := User{}
 
 	//err := db.Debug().Where("name = ?", "Hanajung").Order("id desc, name").Find(&user).Error
-	err := db.Debug().Order("id desc, name").Find(&user).Error
+	err := db.Debug().Order("id desc, name").Last(&user, id).Error
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -74,8 +166,8 @@ func GetUserByID(id uint64) User {
 	return user
 }
 
-//GetAllUsers is get all user
-func GetAllUsers() Users {
+//GetUsers is get all user
+func GetUsers() Users {
 	db := gormdb.ConnectMySQL()
 	result := Users{}
 	user := []User{}
@@ -86,14 +178,23 @@ func GetAllUsers() Users {
 		fmt.Print(err)
 	}
 
+	/*
+		if user != nil {
+			result.Users = user
+			for _, rows := range user {
+				fmt.Println("rows => ", rows)
+			}
+		}
+	*/
+
 	result.Users = user
 	//fmt.Println("User => ", user)
 
 	return result
 }
 
-//GetUser is get user
-func GetUser() Users {
+//GetUserMain is get user
+func GetUserMain() Users {
 	db := gormdb.ConnectMySQL()
 	result := Users{}
 	user := []User{}

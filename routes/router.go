@@ -34,4 +34,7 @@ func Init(e *echo.Echo) {
 
 	// Router
 	e.GET("/users", controllers.GetUsers)
+	e.GET("/user/:id", controllers.GetUser)
+
+	e.GET("/user/add", controllers.CreateUser)
 }

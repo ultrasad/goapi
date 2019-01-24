@@ -10,7 +10,9 @@ import (
 
 /*CreateCon Create mysql connection*/
 func CreateCon() *sql.DB {
-	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/golang_restful_api_sample_dev")
+	//db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/golang_restful_api_sample_dev?charset=utf8&parseTime=True&loc=Local")
+	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/golang_restful_api_sample_dev?charset=utf8&parseTime=True&loc=Local")
+	db.Query("SET NAMES utf8")
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {

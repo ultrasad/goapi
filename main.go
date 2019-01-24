@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/labstack/echo"
+	"github.com/ultrasad/goapi/db/gorm"
 	"github.com/ultrasad/goapi/routes"
 )
 
@@ -80,6 +81,9 @@ func main() {
 
 	//Echo
 	e := echo.New()
+
+	// init database
+	gorm.ConnectMySQL()
 
 	// init server
 	routes.Init(e)

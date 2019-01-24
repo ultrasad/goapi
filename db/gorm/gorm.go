@@ -22,7 +22,7 @@ func ConnectMySQL() *gorm.DB {
 	PROTOCOL := "tcp(0.0.0.0:3306)"
 	DBNAME := "golang_restful_api_sample_dev"
 
-	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
+	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=True"
 	/*db,err := gorm.Open(DBMS, CONNECT)
 	    if err != nil {
 	        panic(err.Error())
