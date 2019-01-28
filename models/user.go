@@ -103,6 +103,25 @@ func Create(v interface{}) error {
 	})
 }
 
+//CreateUser is create user
+func CreateUser(u *User) (*User, error) {
+	//return Users{}
+	//m := User{ID: "3", Name: "Anat", Email: "Anat@gmail.com"}
+	//u := &User{Name: "PeterXX", Email: "PeterXX@gmail.com"}
+	var err error
+	//fmt.Println("m => ", m)
+
+	//db := gormdb.ConnectMySQL()
+	//err = CreateAnimals(db)
+
+	err = Create(u)
+
+	//fmt.Println("m &m => ", &m)
+	fmt.Println("Create m err => ", err)
+
+	return u, err
+}
+
 //CreateAnimals is create example
 func CreateAnimals(db *gorm.DB) error {
 	// Note the use of tx as the database handle once you are within a transaction
@@ -128,25 +147,6 @@ func CreateAnimals(db *gorm.DB) error {
 	}
 
 	return tx.Commit().Error
-}
-
-//CreateUser is create user
-func CreateUser() (*User, error) {
-	//return Users{}
-	//m := User{ID: "3", Name: "Anat", Email: "Anat@gmail.com"}
-	u := &User{Name: "Peter", Email: "Peter@gmail.com"}
-	var err error
-	//fmt.Println("m => ", m)
-
-	//db := gormdb.ConnectMySQL()
-	//err = CreateAnimals(db)
-
-	err = Create(u)
-
-	//fmt.Println("m &m => ", &m)
-	fmt.Println("Create m err => ", err)
-
-	return u, err
 }
 
 //GetUser is get user
