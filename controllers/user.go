@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -32,24 +33,38 @@ func CreateUser() echo.HandlerFunc {
 */
 
 //CreateUser is create new user
-func CreateUser(c echo.Context) (err error) {
-	//u := &models.User{Name: "Micle", Email: "Micle@gmail.com"}
-	u := new(models.User)
-	//result, error := models.CreateUser(u)
-	error := models.Create(c.Bind(u))
+func CreateUser(c echo.Context) error {
+
+	//u := &models.User{}
+	//m := echo.Map{}
+	//fmt.Println("mm => ", m)
+	/*if err := c.Bind(&m); err != nil {
+		return err
+	}*/
+	//return c.JSON(200, m)
+
+	jsonMap := make(map[string]interface{})
+	err := json.NewDecoder(c.Request().Body).Decode(&jsonMap)
+	if err != nil {
+		return err
+	}
+	//json_map has the JSON Payload decoded into a map
+	name := jsonMap["name"]
+	email := jsonMap["email"]
+
+	u := &models.User{Name: name.(string), Email: email.(string)}
+
+	result, error := models.CreateUser(u)
+	//error := models.Create(c.Bind(&m))
 	if error != nil {
-		fmt.Print("error con => ", error)
+		fmt.Println("error con => ", error)
 	}
 
-	/*
-		result := new(models.User)
-		if err = c.Bind(result); err != nil {
-			return
-		}
-	*/
+	return c.JSON(http.StatusOK, result)
 
 	//return c.JSON(http.StatusOK, result)
-	return c.JSON(http.StatusOK, u)
+	//return c.JSON(http.StatusOK, m)
+
 }
 
 //GetUsers is get user

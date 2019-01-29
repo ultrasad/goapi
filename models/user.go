@@ -115,10 +115,9 @@ func Create(v interface{}) error {
 
 //CreateUser is create user
 func CreateUser(u *User) (*User, error) {
-	//func CreateUser(u interface{}) (*User, error) {
 	//return Users{}
 	//m := User{ID: "3", Name: "Anat", Email: "Anat@gmail.com"}
-	//u := &User{Name: "Peter", Email: "Peter@gmail.com"}
+	//u := &User{Name: "PeterXX", Email: "PeterXX@gmail.com"}
 	var err error
 	//fmt.Println("m => ", m)
 
@@ -127,13 +126,10 @@ func CreateUser(u *User) (*User, error) {
 
 	err = Create(u)
 
-	//user := &User{}
-
 	//fmt.Println("m &m => ", &m)
 	fmt.Println("Create m err => ", err)
 
 	return u, err
-	//return user, err
 }
 
 //GetUser is get user
