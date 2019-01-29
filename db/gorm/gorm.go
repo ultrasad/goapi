@@ -43,7 +43,7 @@ func ConnectMySQL() *gorm.DB {
 	return db
 }
 
-//DBManager retutn gorm db
+//DBManager return gorm db
 func DBManager() *gorm.DB {
 	return db
 }

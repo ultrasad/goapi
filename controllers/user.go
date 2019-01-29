@@ -32,12 +32,24 @@ func CreateUser() echo.HandlerFunc {
 */
 
 //CreateUser is create new user
-func CreateUser(c echo.Context) error {
-	result, error := models.CreateUser()
+func CreateUser(c echo.Context) (err error) {
+	//u := &models.User{Name: "Micle", Email: "Micle@gmail.com"}
+	u := new(models.User)
+	//result, error := models.CreateUser(u)
+	error := models.Create(c.Bind(u))
 	if error != nil {
 		fmt.Print("error con => ", error)
 	}
-	return c.JSON(http.StatusOK, result)
+
+	/*
+		result := new(models.User)
+		if err = c.Bind(result); err != nil {
+			return
+		}
+	*/
+
+	//return c.JSON(http.StatusOK, result)
+	return c.JSON(http.StatusOK, u)
 }
 
 //GetUsers is get user

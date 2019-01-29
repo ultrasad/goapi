@@ -53,6 +53,16 @@ func WithinTransaction(fn DBFunc) (err error) {
 	return err
 }
 
+/*
+func WithinTransaction(fn DBFunc) (err error) {
+	tx := gormdb.DBManager().Begin() // start db transaction
+	defer tx.Commit()
+	err = fn(tx)
+	// close db transaction
+	return err
+}
+*/
+
 // FindAll ...
 // Helper function to find records by using 'WithinTransaction'
 /*
@@ -103,38 +113,12 @@ func Create(v interface{}) error {
 	})
 }
 
-//CreateAnimals is create example
-func CreateAnimals(db *gorm.DB) error {
-	// Note the use of tx as the database handle once you are within a transaction
-	tx := db.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
-
-	if err := tx.Error; err != nil {
-		return err
-	}
-
-	if err := tx.Create(&User{Name: "Andrew"}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	if err := tx.Create(&User{Name: "Peter"}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	return tx.Commit().Error
-}
-
 //CreateUser is create user
-func CreateUser() (*User, error) {
+func CreateUser(u *User) (*User, error) {
+	//func CreateUser(u interface{}) (*User, error) {
 	//return Users{}
 	//m := User{ID: "3", Name: "Anat", Email: "Anat@gmail.com"}
-	u := &User{Name: "Peter", Email: "Peter@gmail.com"}
+	//u := &User{Name: "Peter", Email: "Peter@gmail.com"}
 	var err error
 	//fmt.Println("m => ", m)
 
@@ -143,10 +127,13 @@ func CreateUser() (*User, error) {
 
 	err = Create(u)
 
+	//user := &User{}
+
 	//fmt.Println("m &m => ", &m)
 	fmt.Println("Create m err => ", err)
 
 	return u, err
+	//return user, err
 }
 
 //GetUser is get user
@@ -286,4 +273,31 @@ func GetUserDefault() Users {
 		result.Users = append(result.Users, user)
 	}
 	return result
+}
+
+//CreateAnimals is create example
+func CreateAnimals(db *gorm.DB) error {
+	// Note the use of tx as the database handle once you are within a transaction
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	if err := tx.Create(&User{Name: "Andrew"}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Create(&User{Name: "Peter"}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
 }
