@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/labstack/echo"
 	"github.com/ultrasad/goapi/db/gorm"
-	"github.com/ultrasad/goapi/routes"
+	"github.com/ultrasad/goapi/routers"
 )
 
 //Server echo
@@ -86,7 +86,7 @@ func main() {
 	gorm.ConnectMySQL()
 
 	// init server
-	routes.Init(e)
+	routers.Init(e)
 
 	// Server
 	e.Logger.Fatal(e.Start(":1323"))

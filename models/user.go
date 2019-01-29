@@ -24,10 +24,12 @@ type BaseModel struct {
 type (
 	User struct {
 		//BaseModel
-		ID        string    `json:"id"`
-		Name      string    `json:"name"`
-		Email     string    `json:"email"`
-		Timestamp time.Time `json:"timestamp" gorm:"column:timestamp" sql:"DEFAULT:current_timestamp"`
+		ID         uint64    `json:"id" sql:"AUTO_INCREMENT" gorm:"primary_key,column:id"`
+		Prefix     string    `json:"prefix"`
+		Name       string    `json:"name"`
+		Email      string    `json:"email"`
+		CreateDate time.Time `json:"create_date"`
+		Timestamp  time.Time `json:"timestamp" gorm:"column:timestamp" sql:"DEFAULT:current_timestamp"`
 		//CreatedAt *time.Time `json:"created_at"`
 	}
 )
@@ -113,23 +115,25 @@ func Create(v interface{}) error {
 	})
 }
 
-//CreateUser is create user
-func CreateUser(u *User) (*User, error) {
-	//return Users{}
-	//m := User{ID: "3", Name: "Anat", Email: "Anat@gmail.com"}
-	//u := &User{Name: "PeterXX", Email: "PeterXX@gmail.com"}
-	var err error
-	//fmt.Println("m => ", m)
-
-	//db := gormdb.ConnectMySQL()
-	//err = CreateAnimals(db)
-
-	err = Create(u)
-
-	//fmt.Println("m &m => ", &m)
-	fmt.Println("Create m err => ", err)
-
+//CreateUserWithTransection is create user with transection
+func CreateUserWithTransection(u *User) (*User, error) {
+	err := Create(u)
 	return u, err
+}
+
+//CreateUser is create user
+func CreateUser(v interface{}) error {
+	return WithinTransaction(func(tx *gorm.DB) (err error) {
+		// check new object
+		if !gormdb.DBManager().NewRecord(v) {
+			return err
+		}
+		if err = tx.Create(v).Error; err != nil {
+			tx.Rollback() // rollback
+			return err
+		}
+		return err
+	})
 }
 
 //GetUser is get user

@@ -4,67 +4,66 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/ultrasad/goapi/models"
 
 	"github.com/labstack/echo"
 )
 
-//CreateUser is create user
-/*
-func CreateUser(c echo.Context) error {
-	//user := new(models.User)
-	user := models.CreateUser()
-	var err error
-	return c.JSON(http.StatusCreated, user)
-}
-*/
-
-//CreateUser is create user
-/*
-func CreateUser() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		//user := new(models.User)
-		user := models.CreateUser()
-		var err error
-		return c.JSON(http.StatusCreated, user)
-	}
-}
-*/
-
 //CreateUser is create new user
-func CreateUser(c echo.Context) error {
-
-	//u := &models.User{}
-	//m := echo.Map{}
-	//fmt.Println("mm => ", m)
-	/*if err := c.Bind(&m); err != nil {
-		return err
-	}*/
-	//return c.JSON(200, m)
+func CreateUser(c echo.Context) (err error) {
 
 	jsonMap := make(map[string]interface{})
-	err := json.NewDecoder(c.Request().Body).Decode(&jsonMap)
+	err = json.NewDecoder(c.Request().Body).Decode(&jsonMap)
 	if err != nil {
 		return err
 	}
-	//json_map has the JSON Payload decoded into a map
+
+	//jsonMap has the JSON Payload decoded into a map
+	prefix := jsonMap["prefix"]
 	name := jsonMap["name"]
 	email := jsonMap["email"]
+	inputdate := jsonMap["create_date"]
+	//createDate, _ := time.Parse("2016-01-02 15:04:05", inputdate.(string))
+	inputdate = fmt.Sprintf("%v 00:00:00", inputdate)
+	datestamp, _ := time.Parse("2006-01-02 15:04:05", inputdate.(string))
+	//datestamp.Format("2016-01-02 00:00:00")
 
-	u := &models.User{Name: name.(string), Email: email.(string)}
+	fmt.Println("datestamp => ", datestamp, ", => ", err)
 
-	result, error := models.CreateUser(u)
-	//error := models.Create(c.Bind(&m))
-	if error != nil {
-		fmt.Println("error con => ", error)
+	inputtamp := jsonMap["timestamp"]
+	timestamp, _ := time.Parse("2006-01-02 15:04:05", inputtamp.(string))
+
+	fmt.Println("timestamp => ", timestamp)
+
+	user := &models.User{Name: name.(string), Email: email.(string), Prefix: prefix.(string), Timestamp: timestamp, CreateDate: datestamp}
+	/*
+		result, err := models.CreateUserWithTransection(user)
+		//fix format timestamp
+		result.Timestamp.Format("2006-01-02 15:04:05")
+		if err != nil {
+			return
+		}
+		return c.JSON(http.StatusOK, result)
+	*/
+
+	//user.Timestamp.Format("2006-01-02 15:04:05")
+	err = models.CreateUser(user)
+	if err != nil {
+		return
 	}
+	return c.JSON(http.StatusOK, user)
 
-	return c.JSON(http.StatusOK, result)
+	//Bind Data with Process
+	/*
+		usr := new(models.User)
+		if err = c.Bind(usr); err != nil {
+			return err
+		}
 
-	//return c.JSON(http.StatusOK, result)
-	//return c.JSON(http.StatusOK, m)
-
+		return c.JSON(http.StatusOK, usr)
+	*/
 }
 
 //GetUsers is get user
@@ -80,7 +79,7 @@ func GetUsers(c echo.Context) error {
 	result := models.GetUsers()
 	//result := models.GetUserByID(1)
 	for _, ar := range result.Users {
-		fmt.Println("range id => ", ar.Name, ar.Timestamp.Format("2006-01-02 15:04:05"))
+		fmt.Println("row => ", ar.Name, ar.CreateDate, ar.Timestamp.Format("2006-01-02 15:04:05"))
 		//result.Users = append(result.Users, ar)
 	}
 

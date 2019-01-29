@@ -1,4 +1,4 @@
-package routes
+package routers
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-//Init routes
+//Init routers
 func Init(e *echo.Echo) {
 
 	// Middleware

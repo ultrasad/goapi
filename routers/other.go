@@ -1,4 +1,4 @@
-package routes
+package routers
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-//OtherRouter is other routes
+//OtherRouter is other routers
 func OtherRouter(e *echo.Echo) {
 	//log.Print("Secret")
 
