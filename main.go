@@ -33,6 +33,36 @@ func (c *CustomContext) Bar() {
 }
 */
 
+/*
+type addressBook struct {
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Code      int    `json:"code"`
+	Phone     string `json:"phone"`
+}
+
+//getAddressBookAll is get address book all services
+func getAddressBookAll(w http.ResponseWriter, r *http.Request) {
+
+	fmt.Println("get address book all")
+
+	addBook := addressBook{
+		Firstname: "Chaiyarin",
+		Lastname:  "Niamsuwan",
+		Code:      1993,
+		Phone:     "0870940955",
+	}
+	json.NewEncoder(w).Encode(addBook)
+}
+
+//handleRequestAddress is call services method
+func handleRequestAddress() {
+	fmt.Println("Handle Request Address")
+	http.HandleFunc("/getAddress", getAddressBookAll)
+	http.ListenAndServe(":1323", nil)
+}
+*/
+
 func main() {
 	// Echo instance
 	//e := echo.New()
