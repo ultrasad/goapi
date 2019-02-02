@@ -13,4 +13,12 @@ func OtherRouter(e *echo.Echo) {
 	e.GET("/secret", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "ช้างน้อย ฮานะจัง")
 	})
+
+	e.GET("/secret2", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "ช้างน้อย ฮานะจัง 2")
+	})
+
+	e.POST("/secret3", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "ช้างน้อย ฮานะจัง 3")
+	})
 }

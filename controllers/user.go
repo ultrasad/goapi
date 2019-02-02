@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -25,6 +24,7 @@ func CreateUser(c echo.Context) (err error) {
 	name := jsonMap["name"]
 	email := jsonMap["email"]
 	inputdate := jsonMap["create_date"]
+<<<<<<< HEAD
 	//createDate, _ := time.Parse("2016-01-02 15:04:05", inputdate.(string))
 	//inputdate = fmt.Sprintf("%v 00:00:00", inputdate)
 	//datestamp, _ := time.Parse("2006-01-02 15:04:05", inputdate.(string))
@@ -32,11 +32,20 @@ func CreateUser(c echo.Context) (err error) {
 
 	//fmt.Println("datestamp => ", datestamp, ", => ", err)
 	fmt.Println("datestamp => ", inputdate)
+=======
+
+	//inputdate = fmt.Sprintf("%v 00:00:00", inputdate)
+	//datestamp, _ := time.Parse("2006-01-02 15:04:05", inputdate.(string))
+
+	//fmt.Println("inputdate => ", inputdate)
+>>>>>>> ae0ad7554be3eecde06a815508ab57a0bb3a153e
 
 	inputtamp := jsonMap["timestamp"]
+
+	//"2006-01-02 15:04:05" is standard format datetime golang
 	timestamp, _ := time.Parse("2006-01-02 15:04:05", inputtamp.(string))
 
-	fmt.Println("timestamp => ", timestamp)
+	//fmt.Println("timestamp => ", timestamp)
 
 	user := &models.User{Name: name.(string), Email: email.(string), Prefix: prefix.(string), Timestamp: timestamp, CreateDate: inputdate.(string)}
 	/*
@@ -69,26 +78,23 @@ func CreateUser(c echo.Context) (err error) {
 
 //GetUsers is get user
 func GetUsers(c echo.Context) error {
-	//result := models.GetUser()
-	//result := models.FindAll()
 
-	//q := new([]int)
-	//fmt.Println(*q)
-	//fmt.Printf("Value = nil ? =>%t\n", *q == nil)
-
-	//result := models.GetUserStruct()
 	result := models.GetUsers()
+<<<<<<< HEAD
 	//result := models.GetUserByID(1)
 
 	for _, ar := range result.Users {
 		fmt.Println("row => ", ar.Name, ar.CreateDate, ar.Timestamp.Format("2006-01-02 15:04:05"))
 		//result.Users = append(result.Users, ar)
 	}
+=======
+>>>>>>> ae0ad7554be3eecde06a815508ab57a0bb3a153e
 
-	//fmt.Println("result users => ", result.Users)
+	for i, ar := range result.Users {
+		createDate, _ := time.Parse("2006-01-02T00:00:00Z", ar.CreateDate)
+		result.Users[i].CreateDate = createDate.Format("2006-01-02")
+	}
 
-	//println("foo")
-	//return c.JSON(http.StatusOK, result)
 	return c.JSON(http.StatusOK, result)
 }
 
