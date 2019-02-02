@@ -1,16 +1,17 @@
-package handlers
+package handelrs
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
 )
 
-func home(w http.ResponseWriter, _ *http.Request) {
-	fmt.Fprint(w, "Hello World")
+func home(c echo.Context) error {
+	//fmt.Fprint("Hello World")
+	return c.String(http.StatusOK, "Hello World")
 }
 
+//Router is router
 func Router(e *echo.Echo) {
 	e.GET("/home", home)
 }
