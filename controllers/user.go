@@ -26,18 +26,19 @@ func CreateUser(c echo.Context) (err error) {
 	email := jsonMap["email"]
 	inputdate := jsonMap["create_date"]
 	//createDate, _ := time.Parse("2016-01-02 15:04:05", inputdate.(string))
-	inputdate = fmt.Sprintf("%v 00:00:00", inputdate)
-	datestamp, _ := time.Parse("2006-01-02 15:04:05", inputdate.(string))
+	//inputdate = fmt.Sprintf("%v 00:00:00", inputdate)
+	//datestamp, _ := time.Parse("2006-01-02 15:04:05", inputdate.(string))
 	//datestamp.Format("2016-01-02 00:00:00")
 
-	fmt.Println("datestamp => ", datestamp, ", => ", err)
+	//fmt.Println("datestamp => ", datestamp, ", => ", err)
+	fmt.Println("datestamp => ", inputdate)
 
 	inputtamp := jsonMap["timestamp"]
 	timestamp, _ := time.Parse("2006-01-02 15:04:05", inputtamp.(string))
 
 	fmt.Println("timestamp => ", timestamp)
 
-	user := &models.User{Name: name.(string), Email: email.(string), Prefix: prefix.(string), Timestamp: timestamp, CreateDate: datestamp}
+	user := &models.User{Name: name.(string), Email: email.(string), Prefix: prefix.(string), Timestamp: timestamp, CreateDate: inputdate.(string)}
 	/*
 		result, err := models.CreateUserWithTransection(user)
 		//fix format timestamp
@@ -78,6 +79,7 @@ func GetUsers(c echo.Context) error {
 	//result := models.GetUserStruct()
 	result := models.GetUsers()
 	//result := models.GetUserByID(1)
+
 	for _, ar := range result.Users {
 		fmt.Println("row => ", ar.Name, ar.CreateDate, ar.Timestamp.Format("2006-01-02 15:04:05"))
 		//result.Users = append(result.Users, ar)

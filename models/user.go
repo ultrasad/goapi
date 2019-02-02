@@ -28,7 +28,7 @@ type (
 		Prefix     string    `json:"prefix"`
 		Name       string    `json:"name"`
 		Email      string    `json:"email"`
-		CreateDate time.Time `json:"create_date"`
+		CreateDate string    `json:"create_date"`
 		Timestamp  time.Time `json:"timestamp" gorm:"column:timestamp" sql:"DEFAULT:current_timestamp"`
 		//CreatedAt *time.Time `json:"created_at"`
 	}
